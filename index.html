@@ -1985,7 +1985,7 @@ function renderHistoryPage() {
           '<td style="padding:6px 8px;color:var(--muted)">'+(s.rank||i+1)+'</td>' +
           '<td style="padding:6px 8px;font-weight:700">' + s.name + '</td>' +
           '<td style="padding:6px 8px"><span class="badge '+s.team+'">'+(s.team==='ladies'?'Ladies':'Gents')+'</span></td>' +
-          '<td style="padding:6px 8px;text-align:right;font-family:'Fredoka One',cursive;color:var(--gold)">' + (s.pts ? fmtPts(s.pts) : '—') + '</td>' +
+          '<td style="padding:6px 8px;text-align:right;font-family:\'Fredoka One\',cursive;color:var(--gold)">' + (s.pts ? fmtPts(s.pts) : '—') + '</td>' +
           '<td style="padding:6px 8px;text-align:right;color:var(--muted)">' + (s.wins !== undefined ? s.wins+'-'+s.losses : '—') + '</td>' +
           '</tr>'
         ).join('') +
@@ -1995,10 +1995,10 @@ function renderHistoryPage() {
     const teamScoreHTML = yr.teamScore
       ? '<div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap">' +
         '<div style="background:rgba(233,30,140,.1);border:1px solid rgba(233,30,140,.3);border-radius:8px;padding:10px 16px;text-align:center">' +
-        '<div style="font-family:'Fredoka One',cursive;font-size:22px;color:var(--ladies)">' + yr.teamScore.ladiesWins + '</div>' +
+        '<div style="font-family:\'Fredoka One\',cursive;font-size:22px;color:var(--ladies)">' + yr.teamScore.ladiesWins + '</div>' +
         '<div style="font-size:11px;color:var(--muted);letter-spacing:1px">LADIES WINS</div></div>' +
         '<div style="background:rgba(30,123,233,.1);border:1px solid rgba(30,123,233,.3);border-radius:8px;padding:10px 16px;text-align:center">' +
-        '<div style="font-family:'Fredoka One',cursive;font-size:22px;color:var(--gents)">' + yr.teamScore.gentsWins + '</div>' +
+        '<div style="font-family:\'Fredoka One\',cursive;font-size:22px;color:var(--gents)">' + yr.teamScore.gentsWins + '</div>' +
         '<div style="font-size:11px;color:var(--muted);letter-spacing:1px">GENTS WINS</div></div></div>'
       : '';
 
@@ -2012,7 +2012,7 @@ function renderHistoryPage() {
       (hasWinner
         ? '<div style="display:flex;align-items:center;gap:12px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:14px;margin-bottom:12px">' +
           '<span style="font-size:32px">🏆</span>' +
-          '<div><div style="font-family:'Fredoka One',cursive;font-size:20px;color:'+teamColor+'">'+yr.winner.name+'</div>' +
+          '<div><div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:'+teamColor+'">'+yr.winner.name+'</div>' +
           '<div style="font-size:12px;color:var(--muted)">'+(yr.winner.division||'')+' · '+(yr.winner.team==='ladies'?'Team Ladies':'Team Gents')+'</div></div>' +
           '</div>'
         : '<div style="color:var(--muted);font-size:13px;margin-bottom:8px">🏆 Champion TBD — add to <code>TOURNAMENT_HISTORY</code> in the script.</div>') +
@@ -2079,14 +2079,14 @@ function renderDraftTable(picks) {
 
   const summaryHTML = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">' +
     '<div style="background:rgba(233,30,140,.1);border:1px solid rgba(233,30,140,.25);border-radius:8px;padding:8px 14px;text-align:center">' +
-    '<div style="font-family:'Fredoka One',cursive;font-size:20px;color:var(--ladies)">'+ladiesPicks+'</div>' +
+    '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:var(--ladies)">'+ladiesPicks+'</div>' +
     '<div style="font-size:11px;color:var(--muted)">Ladies Picks</div></div>' +
     '<div style="background:rgba(30,123,233,.1);border:1px solid rgba(30,123,233,.25);border-radius:8px;padding:8px 14px;text-align:center">' +
-    '<div style="font-family:'Fredoka One',cursive;font-size:20px;color:var(--gents)">'+gentsPicks+'</div>' +
+    '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:var(--gents)">'+gentsPicks+'</div>' +
     '<div style="font-size:11px;color:var(--muted)">Gents Picks</div></div>' +
     Object.entries(posCounts).sort((a,b)=>b[1]-a[1]).map(([pos,cnt]) =>
       '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center">' +
-      '<div style="font-family:'Fredoka One',cursive;font-size:20px;color:'+(posColors[pos]||'var(--text)')+'">'+cnt+'</div>' +
+      '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:'+(posColors[pos]||'var(--text)')+'">'+cnt+'</div>' +
       '<div style="font-size:11px;color:var(--muted)">'+pos+'</div></div>'
     ).join('') +
     '</div>';
@@ -2105,7 +2105,7 @@ function renderDraftTable(picks) {
       '</tr></thead><tbody>' +
       picks.map((p,i) =>
         '<tr style="border-bottom:1px solid var(--border);'+(i%2===0?'':'background:rgba(255,255,255,.02)')+'">' +
-        '<td style="padding:7px 8px;text-align:right;color:var(--muted);font-family:'Fredoka One',cursive">'+p.pickNumber+'</td>' +
+        '<td style="padding:7px 8px;text-align:right;color:var(--muted);font-family:\'Fredoka One\',cursive">'+p.pickNumber+'</td>' +
         '<td style="padding:7px 8px;font-weight:700">'+p.playerName+'</td>' +
         '<td style="padding:7px 8px;text-align:center"><span style="background:'+(posColors[p.position]||'#666')+';color:#000;font-weight:800;font-size:10px;padding:2px 7px;border-radius:4px;letter-spacing:.5px">'+p.position+'</span></td>' +
         '<td style="padding:7px 8px;color:var(--muted)">'+p.nflTeam+'</td>' +
