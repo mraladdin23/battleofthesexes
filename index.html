@@ -51,22 +51,7 @@ header::before {
 .header-side.gents  { color:var(--gents);  text-shadow:0 0 30px rgba(30,123,233,.5); }
 .vs-badge { font-family:'Lilita One',cursive; font-size:clamp(14px,2vw,22px); color:var(--gold); background:rgba(255,215,0,.1); border:2px solid rgba(255,215,0,.3); border-radius:8px; padding:2px 10px; }
 
-/* ── SCOREBOARD ── */
-#scoreboard { display:flex; align-items:stretch; background:var(--surface); border-bottom:1px solid var(--border); }
-.score-side { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px; gap:4px; }
-.score-side.ladies { background:linear-gradient(135deg,rgba(233,30,140,.12),transparent); }
-.score-side.gents  { background:linear-gradient(135deg,transparent,rgba(30,123,233,.12)); }
-.score-label { font-family:'Fredoka One',cursive; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
-.score-pts { font-family:'Lilita One',cursive; font-size:clamp(28px,5vw,52px); line-height:1; }
-.score-pts.ladies { color:var(--ladies); } .score-pts.gents { color:var(--gents); }
-.score-detail { font-size:12px; color:var(--muted); }
-.score-divider { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 16px; gap:4px; }
-.score-divider-bar { width:2px; flex:1; background:var(--border); }
-.score-divider-label { font-family:'Fredoka One',cursive; font-size:10px; letter-spacing:2px; color:var(--muted); writing-mode:vertical-lr; transform:rotate(180deg); }
-#lead-bar-wrap { padding:8px 24px 12px; background:var(--surface); border-bottom:1px solid var(--border); }
-#lead-bar-track { position:relative; height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
-#lead-bar-fill { position:absolute; top:0; bottom:0; transition:width .6s ease,left .6s ease,background .6s ease; border-radius:4px; }
-#lead-bar-labels { display:flex; justify-content:space-between; margin-top:4px; font-size:11px; color:var(--muted); font-family:'Fredoka One',cursive; }
+/* scoreboard removed */
 
 /* ── MAIN NAV TABS ── */
 #main-nav {
@@ -489,37 +474,17 @@ footer a { color:var(--muted); text-decoration:none; }
   </div>
 </header>
 
-<div id="scoreboard">
-  <div class="score-side ladies">
-    <div class="score-label">Team Ladies</div>
-    <div class="score-pts ladies" id="ladies-total">&#8212;</div>
-    <div class="score-detail" id="ladies-detail">Loading&hellip;</div>
-  </div>
-  <div class="score-divider">
-    <div class="score-divider-bar"></div>
-    <div class="score-divider-label">TOTAL PTS</div>
-    <div class="score-divider-bar"></div>
-  </div>
-  <div class="score-side gents">
-    <div class="score-label">Team Gents</div>
-    <div class="score-pts gents" id="gents-total">&#8212;</div>
-    <div class="score-detail" id="gents-detail">Loading&hellip;</div>
-  </div>
-</div>
-<div id="lead-bar-wrap">
-  <div id="lead-bar-track"><div id="lead-bar-fill"></div></div>
-  <div id="lead-bar-labels">
-    <span>&#9664; LADIES LEAD</span>
-    <span id="lead-bar-text">calculating&hellip;</span>
-    <span>GENTS LEAD &#9654;</span>
-  </div>
-</div>
+
 
 <div id="main-nav">
   <div class="nav-tab" data-page="home">&#127968; Home</div>
   <div class="nav-tab active" data-page="leaderboard">&#127942; Leaderboard</div>
   <div class="nav-tab" data-page="divisions">&#128203; Divisions</div>
   <div class="nav-tab" data-page="rosters">&#127944; Top Rosters</div>
+  <div class="nav-tab" data-page="summary">&#128202; Weekly Summary</div>
+  <div class="nav-tab" data-page="h2h">&#9876; Head-to-Head</div>
+  <div class="nav-tab" data-page="draft">&#128196; Draft</div>
+  <div class="nav-tab" data-page="history">&#128081; Tournament History</div>
   <div class="nav-tab" data-page="playoffs">&#127942; Playoffs</div>
   <div class="nav-tab" data-page="rules">&#128218; Rules</div>
   <div class="nav-tab" data-page="register">&#9997; Register</div>
@@ -533,80 +498,47 @@ footer a { color:var(--muted); text-decoration:none; }
   <div class="home-grid">
 
     <!-- Commish Notes -->
-    <div class="home-card">
+    <div class="home-card full-width">
       <div class="home-card-header">
         <span class="home-card-icon">📣</span>
         <span class="home-card-title">Notes from the Commish</span>
       </div>
       <div class="home-card-body">
-        <div class="commish-note" id="commish-note-text">Welcome to the 2025 Battle of the Sexes Fantasy Football Tournament! 🏈
-
-This is a placeholder for commish notes. Update the <code>COMMISH_NOTE</code> variable in the script to set your message here. You can include announcements, rule clarifications, weekly callouts, trash talk — whatever you need!
-
-Stay competitive and have fun out there. May the best team win! 🏆</div>
+        <div class="commish-note" id="commish-note-text">Welcome to the 2025 Battle of the Sexes Fantasy Football Tournament! 🏈</div>
         <div class="commish-meta">— The Commish &nbsp;·&nbsp; <span id="commish-note-date">2025 Season</span></div>
       </div>
     </div>
 
-    <!-- Scoring Settings -->
+    <!-- Quick links / nav cards -->
     <div class="home-card">
-      <div class="home-card-header">
-        <span class="home-card-icon">⚙️</span>
-        <span class="home-card-title">Scoring Settings</span>
-      </div>
+      <div class="home-card-header"><span class="home-card-icon">📊</span><span class="home-card-title">Weekly Summary</span></div>
       <div class="home-card-body">
-        <div class="scoring-grid">
-          <div class="scoring-item"><div class="scoring-item-label">Pass TD</div><div class="scoring-item-val">4</div><div class="scoring-item-desc">pts per TD pass</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">Pass Yds</div><div class="scoring-item-val">0.04</div><div class="scoring-item-desc">pts per yard (25 yd/pt)</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">Rush TD</div><div class="scoring-item-val">6</div><div class="scoring-item-desc">pts per rushing TD</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">Rush Yds</div><div class="scoring-item-val">0.1</div><div class="scoring-item-desc">pts per yard (10 yd/pt)</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">Rec TD</div><div class="scoring-item-val">6</div><div class="scoring-item-desc">pts per receiving TD</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">Rec Yds</div><div class="scoring-item-val">0.1</div><div class="scoring-item-desc">pts per yard (10 yd/pt)</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">PPR</div><div class="scoring-item-val">1</div><div class="scoring-item-desc">pt per reception</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">Int</div><div class="scoring-item-val">-2</div><div class="scoring-item-desc">pts per interception</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">Fumble</div><div class="scoring-item-val">-2</div><div class="scoring-item-desc">pts per fumble lost</div></div>
-          <div class="scoring-item"><div class="scoring-item-label">2PT Conv</div><div class="scoring-item-val">2</div><div class="scoring-item-desc">pts per conversion</div></div>
-        </div>
-        <p style="font-size:11px;color:var(--muted);margin-top:12px">⚠️ Update scoring values in the <code>SCORING_SETTINGS</code> array in the page script to reflect actual league settings.</p>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">AI-generated recap of the latest week — top scorers, blowouts, upsets &amp; more.</p>
+        <button class="filter-pill active" onclick="switchPage('summary')" style="cursor:pointer">Go to Weekly Summary →</button>
       </div>
     </div>
 
-    <!-- Tournament Summary (live from API) -->
-    <div class="home-card full-width">
-      <div class="home-card-header">
-        <span class="home-card-icon">📊</span>
-        <span class="home-card-title">Tournament Summary &amp; Weekly Highlights</span>
-        <div style="margin-left:auto">
-          <div class="h2h-week-sel" id="summary-week-sel" style="margin:0"></div>
-        </div>
-      </div>
-      <div class="home-card-body" id="summary-body">
-        <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Loading summary data…</div>
-      </div>
-    </div>
-
-    <!-- Head to Head -->
-    <div class="home-card full-width">
-      <div class="home-card-header">
-        <span class="home-card-icon">⚔️</span>
-        <span class="home-card-title">Head-to-Head: Ladies vs Gents</span>
-        <div style="margin-left:auto">
-          <div class="h2h-week-sel" id="h2h-week-sel" style="margin:0"></div>
-        </div>
-      </div>
-      <div class="home-card-body" id="h2h-body">
-        <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Loading matchup data…</div>
-      </div>
-    </div>
-
-    <!-- Hall of Fame -->
-    <div class="home-card full-width">
-      <div class="home-card-header">
-        <span class="home-card-icon">🏆</span>
-        <span class="home-card-title">Hall of Champions</span>
-      </div>
+    <div class="home-card">
+      <div class="home-card-header"><span class="home-card-icon">⚔️</span><span class="home-card-title">Head-to-Head</span></div>
       <div class="home-card-body">
-        <div class="hof-grid" id="hof-grid"></div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Cross-gender matchup results week by week — who's winning the battle?</p>
+        <button class="filter-pill active" onclick="switchPage('h2h')" style="cursor:pointer">Go to Head-to-Head →</button>
+      </div>
+    </div>
+
+    <div class="home-card">
+      <div class="home-card-header"><span class="home-card-icon">🏆</span><span class="home-card-title">Tournament History</span></div>
+      <div class="home-card-body">
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Past champions, final standings, and year-by-year results going back to day one.</p>
+        <button class="filter-pill active" onclick="switchPage('history')" style="cursor:pointer">Go to History →</button>
+      </div>
+    </div>
+
+    <div class="home-card">
+      <div class="home-card-header"><span class="home-card-icon">📋</span><span class="home-card-title">Draft Summary</span></div>
+      <div class="home-card-body">
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Full draft results across all 28 divisions — see who grabbed who and when.</p>
+        <button class="filter-pill active" onclick="switchPage('draft')" style="cursor:pointer">Go to Draft →</button>
       </div>
     </div>
 
@@ -661,6 +593,95 @@ Stay competitive and have fun out there. May the best team win! 🏆</div>
       </div>
     </div>
     <div id="roster-grid"></div>
+  </div>
+</div>
+
+<!-- PAGE: WEEKLY SUMMARY -->
+<div class="page" id="page-summary">
+  <div style="max-width:860px;margin:0 auto">
+    <div class="home-card full-width" style="margin-bottom:0">
+      <div class="home-card-header" style="flex-wrap:wrap;gap:8px">
+        <span class="home-card-icon">📊</span>
+        <span class="home-card-title">Weekly Summary</span>
+        <div style="margin-left:auto">
+          <div class="h2h-week-sel" id="summary-week-sel" style="margin:0"></div>
+        </div>
+      </div>
+      <div class="home-card-body">
+        <!-- AI-generated recap paragraph -->
+        <div id="ai-recap-wrap" style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="font-size:18px">🤖</span>
+            <span style="font-family:'Fredoka One',cursive;font-size:14px;color:var(--gold);letter-spacing:1px">AI GAME RECAP</span>
+            <button id="ai-recap-btn" onclick="generateAIRecap()" style="margin-left:auto;background:linear-gradient(135deg,var(--ladies),var(--gents));border:none;color:#fff;font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;letter-spacing:.5px">✨ Generate Recap</button>
+          </div>
+          <div id="ai-recap-text" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;min-height:60px;font-size:14px;line-height:1.7;color:var(--text)">
+            <span style="color:var(--muted)">Click "Generate Recap" to get an AI-written summary of the selected week.</span>
+          </div>
+        </div>
+        <!-- Stats grid -->
+        <div id="summary-body">
+          <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Loading summary data…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: HEAD TO HEAD -->
+<div class="page" id="page-h2h">
+  <div style="max-width:960px;margin:0 auto">
+    <div class="home-card full-width" style="margin-bottom:0">
+      <div class="home-card-header" style="flex-wrap:wrap;gap:8px">
+        <span class="home-card-icon">⚔️</span>
+        <span class="home-card-title">Head-to-Head: Ladies vs Gents</span>
+        <div style="margin-left:auto">
+          <div class="h2h-week-sel" id="h2h-week-sel" style="margin:0"></div>
+        </div>
+      </div>
+      <div class="home-card-body" id="h2h-body">
+        <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Loading matchup data…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: DRAFT SUMMARY -->
+<div class="page" id="page-draft">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="home-card full-width" style="margin-bottom:16px">
+      <div class="home-card-header" style="flex-wrap:wrap;gap:8px">
+        <span class="home-card-icon">📋</span>
+        <span class="home-card-title">Draft Summary</span>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input id="draft-search" type="text" placeholder="Search player or manager…" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:20px;font-family:inherit;font-size:13px;outline:none;width:200px">
+          <select id="draft-pos-filter" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:20px;font-family:inherit;font-size:13px;outline:none">
+            <option value="all">All Positions</option>
+            <option value="QB">QB</option>
+            <option value="RB">RB</option>
+            <option value="WR">WR</option>
+            <option value="TE">TE</option>
+            <option value="K">K</option>
+            <option value="DEF">DEF</option>
+          </select>
+          <select id="draft-team-filter" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:20px;font-family:inherit;font-size:13px;outline:none">
+            <option value="all">Both Teams</option>
+            <option value="ladies">Team Ladies</option>
+            <option value="gents">Team Gents</option>
+          </select>
+        </div>
+      </div>
+      <div class="home-card-body" id="draft-body">
+        <div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">Loading draft data…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: TOURNAMENT HISTORY -->
+<div class="page" id="page-history">
+  <div style="max-width:960px;margin:0 auto" id="history-body">
+    <div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">Loading history…</div>
   </div>
 </div>
 
@@ -776,6 +797,12 @@ Stay competitive and have fun out there. May the best team win! 🏆</div>
       </ul>
     </div>
 
+
+    <div class="rules-section">
+      <div class="rules-section-title">⚙️ Scoring Settings</div>
+      <div class="scoring-grid" style="margin-top:12px" id="rules-scoring-grid"></div>
+      <p style="font-size:11px;color:var(--muted);margin-top:12px">Update values via the <code>SCORING_SETTINGS</code> array in the page script.</p>
+    </div>
   </div>
 </div>
 
@@ -1378,32 +1405,6 @@ function getRosters(filter) {
 }
 
 // ── SCOREBOARD ──
-function updateScoreboard() {
-  let lPts=0, gPts=0, lW=0, lL=0, gW=0, gL=0;
-  for (const r of getRosters('all')) {
-    if (r.team==='ladies'){ lPts+=r.totalPts; lW+=r.wins; lL+=r.losses; }
-    else if (r.team==='gents'){ gPts+=r.totalPts; gW+=r.wins; gL+=r.losses; }
-  }
-  document.getElementById('ladies-total').textContent = fmtPts(lPts);
-  document.getElementById('gents-total').textContent  = fmtPts(gPts);
-  document.getElementById('ladies-detail').textContent = lW+'-'+lL+' record';
-  document.getElementById('gents-detail').textContent  = gW+'-'+gL+' record';
-  const total = lPts + gPts;
-  const bar = document.getElementById('lead-bar-fill');
-  const lbl = document.getElementById('lead-bar-text');
-  if (total > 0) {
-    if (lPts >= gPts) {
-      bar.style.left='0'; bar.style.width=((lPts/total)*100).toFixed(1)+'%';
-      bar.style.background='linear-gradient(90deg,var(--ladies),var(--ladies-light))';
-      lbl.textContent='Ladies +'+fmtPts(lPts-gPts); lbl.style.color='var(--ladies-light)';
-    } else {
-      const gp=(gPts/total)*100;
-      bar.style.left=(100-gp).toFixed(1)+'%'; bar.style.width=gp.toFixed(1)+'%';
-      bar.style.background='linear-gradient(90deg,var(--gents-light),var(--gents))';
-      lbl.textContent='Gents +'+fmtPts(gPts-lPts); lbl.style.color='var(--gents-light)';
-    }
-  }
-}
 
 // ── LEADERBOARD (sorted by total pts) ──
 function renderLeaderboard() {
@@ -1513,17 +1514,24 @@ function switchPage(page) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelector('.nav-tab[data-page="'+page+'"]').classList.add('active');
+  const navTab = document.querySelector('.nav-tab[data-page="'+page+'"]');
+  if (navTab) navTab.classList.add('active');
   if (page === 'rosters')  loadRosters();
   if (page === 'playoffs') loadPlayoffs();
   if (page === 'home')     renderHomePage();
+  if (page === 'summary' || page === 'h2h') initH2HPages();
+  if (page === 'draft')    renderDraftPage();
+  if (page === 'history')  renderHistoryPage();
 }
 
 function renderAll() {
-  updateScoreboard();
   renderLeaderboard();
   renderDivisions();
-  if (currentPage === 'home') renderHomePage();
+  renderHomePage();
+  renderScoringSettings();
+  initH2HPages();
+  renderDraftPage();
+  renderHistoryPage();
 }
 
 // ── HOME PAGE ──
@@ -1533,95 +1541,60 @@ let h2hWeek      = null;
 let summaryWeek  = null;
 
 function renderHomePage() {
-  // Commish note
   document.getElementById('commish-note-text').textContent = COMMISH_NOTE.text;
   document.getElementById('commish-note-date').textContent = COMMISH_NOTE.date;
-
-  // Scoring settings
-  const sg = document.querySelector('.scoring-grid');
-  if (sg) {
-    sg.innerHTML = SCORING_SETTINGS.map(s =>
-      '<div class="scoring-item">' +
-        '<div class="scoring-item-label">'+s.label+'</div>' +
-        '<div class="scoring-item-val">'+s.val+'</div>' +
-        '<div class="scoring-item-desc">'+s.desc+'</div>' +
-      '</div>'
-    ).join('');
-  }
-
-  // Hall of Fame
-  const hofGrid = document.getElementById('hof-grid');
-  if (hofGrid) {
-    if (HALL_OF_FAME.length === 0) {
-      hofGrid.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px">'+
-        'No past champions recorded yet. Add entries to the <code>HALL_OF_FAME</code> array in the script to display them here.'+
-        '</div>';
-    } else {
-      hofGrid.innerHTML = [...HALL_OF_FAME].sort((a,b)=>b.year-a.year).map(c=>
-        '<div class="hof-card">'+
-          '<div class="hof-year">'+c.year+' Champion</div>'+
-          '<div class="hof-crown">🏆</div>'+
-          '<div class="hof-name '+c.team+'">'+c.name+'</div>'+
-          '<div class="hof-detail">'+c.detail+'</div>'+
-          '<div style="margin-top:6px"><span class="badge '+c.team+'">'+(c.team==='ladies'?'Team Ladies':'Team Gents')+'</span></div>'+
-        '</div>'
-      ).join('');
-    }
-  }
-
-  if (allData.length === 0) return;
-  if (homeRendered) return;
-  homeRendered = true;
-
-  loadH2HData();
 }
 
-async function loadH2HData() {
+let h2hInited = false;
+function initH2HPages() {
   // Data already pre-built by fetch-data.js — just use h2hCached from data.json
   h2hRawData = h2hCached;
 
   const availableWeeks = Object.keys(h2hRawData).map(Number).sort((a,b) => a-b);
-  if (!availableWeeks.length) {
-    document.getElementById('summary-body').innerHTML =
-      '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No matchup data available yet.</div>';
-    document.getElementById('h2h-body').innerHTML =
-      '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No matchup data available yet.</div>';
-    return;
-  }
+  if (!availableWeeks.length) return;
 
   const latestWeek = availableWeeks[availableWeeks.length - 1];
-  summaryWeek = latestWeek;
-  h2hWeek     = latestWeek;
+  if (summaryWeek === null) summaryWeek = latestWeek;
+  if (h2hWeek === null) h2hWeek = 'all';
 
-  // Summary week selector
-  const summSel = document.getElementById('summary-week-sel');
-  summSel.innerHTML = availableWeeks.map(w =>
-    '<button class="h2h-week-btn'+(w===latestWeek?' active':'')+'" data-sw="'+w+'">Wk '+w+'</button>'
-  ).join('');
-  summSel.addEventListener('click', e => {
-    const b = e.target.closest('[data-sw]');
-    if (!b) return;
-    summaryWeek = +b.dataset.sw;
-    summSel.querySelectorAll('.h2h-week-btn').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    renderSummary();
-  });
+  // Only build selectors once
+  if (!h2hInited) {
+    h2hInited = true;
 
-  // H2H week selector
-  const h2hSel = document.getElementById('h2h-week-sel');
-  h2hSel.innerHTML = ['all', ...availableWeeks].map(w =>
-    '<button class="h2h-week-btn'+(w==='all'?' active':'')+'" data-hw="'+w+'">'+(w==='all'?'All Wks':'Wk '+w)+'</button>'
-  ).join('');
-  h2hWeek = 'all';
+    // Summary week selector
+    const summSel = document.getElementById('summary-week-sel');
+    if (summSel) {
+      summSel.innerHTML = availableWeeks.map(w =>
+        '<button class="h2h-week-btn'+(w===latestWeek?' active':'')+'" data-sw="'+w+'">Wk '+w+'</button>'
+      ).join('');
+      summSel.addEventListener('click', e => {
+        const b = e.target.closest('[data-sw]');
+        if (!b) return;
+        summaryWeek = +b.dataset.sw;
+        summSel.querySelectorAll('.h2h-week-btn').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        renderSummary();
+        // Reset AI recap when week changes
+        document.getElementById('ai-recap-text').innerHTML = '<span style="color:var(--muted)">Click "Generate Recap" for Week '+summaryWeek+' summary.</span>';
+      });
+    }
 
-  h2hSel.addEventListener('click', e => {
-    const b = e.target.closest('[data-hw]');
-    if (!b) return;
-    h2hWeek = b.dataset.hw === 'all' ? 'all' : +b.dataset.hw;
-    h2hSel.querySelectorAll('.h2h-week-btn').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    renderH2H();
-  });
+    // H2H week selector
+    const h2hSel = document.getElementById('h2h-week-sel');
+    if (h2hSel) {
+      h2hSel.innerHTML = ['all', ...availableWeeks].map(w =>
+        '<button class="h2h-week-btn'+(w==='all'?' active':'')+'" data-hw="'+w+'">'+(w==='all'?'All Wks':'Wk '+w)+'</button>'
+      ).join('');
+      h2hSel.addEventListener('click', e => {
+        const b = e.target.closest('[data-hw]');
+        if (!b) return;
+        h2hWeek = b.dataset.hw === 'all' ? 'all' : +b.dataset.hw;
+        h2hSel.querySelectorAll('.h2h-week-btn').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        renderH2H();
+      });
+    }
+  }
 
   renderSummary();
   renderH2H();
@@ -1775,8 +1748,9 @@ async function main() {
     const data = await res.json();
 
     // Populate globals
-    allData    = data.leagues  || [];
-    h2hCached  = data.h2hByWeek || {};
+    allData         = data.leagues   || [];
+    h2hCached       = data.h2hByWeek  || {};
+    window._draftData = data.draftPicks || [];
 
     // Show freshness info
     if (data.meta?.generatedAt) {
@@ -1846,6 +1820,305 @@ function setupListeners() {
 let nflPlayers   = null;   // {id: {name, pos, nfl_team}}
 let rosterFilter = 'all';
 let rosterFetched = false;
+
+// ── TOURNAMENT HISTORY ──
+// Add past years here. Use leagueIds arrays to pull live from Sleeper,
+// or fill in standings/winner manually for years without league data.
+const TOURNAMENT_HISTORY = [
+  {
+    year: 2024,
+    winner: null,           // e.g. { name: 'Jane Smith', team: 'ladies', division: 'SwiftSheeran' }
+    teamScore: null,        // e.g. { ladiesWins: 143, gentsWins: 109 }
+    notes: '',
+    leagueIds: [],          // populate with 2024 league IDs to auto-pull standings
+    standings: []           // or provide manually: [{rank,name,team,pts,wins,losses}]
+  },
+  {
+    year: 2023,
+    winner: null,
+    teamScore: null,
+    notes: '',
+    leagueIds: [],
+    standings: []
+  },
+  {
+    year: 2022,
+    winner: null,
+    teamScore: null,
+    notes: '',
+    leagueIds: [],
+    standings: []
+  },
+];
+
+
+// ── SCORING SETTINGS — populate rules tab ──
+function renderScoringSettings() {
+  const sg = document.getElementById('rules-scoring-grid');
+  if (!sg) return;
+  sg.innerHTML = SCORING_SETTINGS.map(s =>
+    '<div class="scoring-item">' +
+      '<div class="scoring-item-label">'+s.label+'</div>' +
+      '<div class="scoring-item-val">'+s.val+'</div>' +
+      '<div class="scoring-item-desc">'+s.desc+'</div>' +
+    '</div>'
+  ).join('');
+}
+
+// ── AI WEEKLY RECAP ──
+async function generateAIRecap() {
+  if (!h2hRawData || !summaryWeek) return;
+  const wkData = h2hRawData[summaryWeek] || [];
+  if (!wkData.length) { alert('No data for week ' + summaryWeek); return; }
+
+  const btn = document.getElementById('ai-recap-btn');
+  const box = document.getElementById('ai-recap-text');
+  btn.disabled = true;
+  btn.textContent = '⏳ Writing recap…';
+  box.innerHTML = '<span style="color:var(--muted)">Generating…</span>';
+
+  // Build stats for the AI
+  const allScores = wkData.flatMap(m => [
+    {name: m.ladyName, team: 'ladies', pts: m.ladyPts},
+    {name: m.gentName, team: 'gents',  pts: m.gentPts}
+  ]).sort((a,b) => b.pts - a.pts);
+
+  const topScorer   = allScores[0];
+  const lowScorer   = allScores[allScores.length - 1];
+  const sorted      = [...wkData].sort((a,b) => b.diff - a.diff);
+  const blowout     = sorted[0];
+  const closest     = sorted[sorted.length - 1];
+  let lW=0, gW=0;
+  for (const m of wkData) m.winner === 'ladies' ? lW++ : gW++;
+
+  // Top 10 scorers
+  const top10 = allScores.slice(0, 10).map((p,i) =>
+    (i+1)+'. '+p.name+' ('+p.team+') — '+fmtPts(p.pts)+' pts'
+  ).join('\n');
+
+  // Check for streaks from allData (multi-week wins)
+  const streakInfo = [];
+  if (h2hRawData) {
+    const allWeeks = Object.keys(h2hRawData).map(Number).sort((a,b)=>a-b);
+    const currentWkIdx = allWeeks.indexOf(summaryWeek);
+    if (currentWkIdx >= 2) {
+      const prev2 = allWeeks.slice(Math.max(0, currentWkIdx-2), currentWkIdx+1);
+      const winnersByName = {};
+      for (const w of prev2) {
+        for (const m of (h2hRawData[w]||[])) {
+          const winner = m.winner === 'ladies' ? m.ladyName : m.gentName;
+          winnersByName[winner] = (winnersByName[winner]||[]);
+          winnersByName[winner].push(w);
+        }
+      }
+      for (const [name, weeks] of Object.entries(winnersByName)) {
+        if (weeks.length >= prev2.length) streakInfo.push(name + ' won all of weeks ' + weeks.join(', '));
+      }
+    }
+  }
+
+  const prompt = `You are the official recapper for the "Battle of the Sexes" fantasy football tournament — a 28-division competition where Team Ladies faces Team Gents all season. Write a SHORT, FUN, PLAYFUL 2-3 sentence recap of Week ${summaryWeek} results. Use trash talk, humor, and celebration. Keep it under 80 words.
+
+WEEK ${summaryWeek} DATA:
+- Team record: Ladies ${lW}-${gW} Gents (${lW > gW ? 'Ladies won the week!' : gW > lW ? 'Gents won the week!' : 'Tied week!'})
+- Top scorer: ${topScorer.name} (${topScorer.team}) with ${fmtPts(topScorer.pts)} pts
+- Lowest scorer: ${lowScorer.name} (${lowScorer.team}) with ${fmtPts(lowScorer.pts)} pts
+- Biggest blowout: ${blowout.winner==='ladies'?blowout.ladyName:blowout.gentName} beat ${blowout.winner==='ladies'?blowout.gentName:blowout.ladyName} by ${fmtPts(blowout.diff)} pts (${blowout.divName})
+- Closest matchup: ${closest.winner==='ladies'?closest.ladyName:closest.gentName} edged ${closest.winner==='ladies'?closest.gentName:closest.ladyName} by only ${fmtPts(closest.diff)} pts (${closest.divName})
+${streakInfo.length ? '- Streaks: ' + streakInfo.join('; ') : ''}
+
+Top 10 scorers this week:
+${top10}
+
+Write the recap now (2-3 fun sentences, no bullet points, no headers):`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.find(b => b.type === 'text')?.text || 'Could not generate recap.';
+    box.innerHTML = '<span style="font-size:20px">🏈</span> ' + text.trim();
+  } catch(err) {
+    box.innerHTML = '<span style="color:#e55">Error generating recap: ' + err.message + '</span>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Regenerate';
+  }
+}
+
+// ── TOURNAMENT HISTORY PAGE ──
+function renderHistoryPage() {
+  const body = document.getElementById('history-body');
+  if (!body) return;
+
+  if (!TOURNAMENT_HISTORY || !TOURNAMENT_HISTORY.length) {
+    body.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px">No tournament history configured yet.</div>';
+    return;
+  }
+
+  const sorted = [...TOURNAMENT_HISTORY].sort((a,b) => b.year - a.year);
+
+  body.innerHTML = sorted.map(yr => {
+    const hasWinner = yr.winner;
+    const hasStandings = yr.standings && yr.standings.length > 0;
+    const teamColor = hasWinner ? (yr.winner.team === 'ladies' ? 'var(--ladies)' : 'var(--gents)') : 'var(--gold)';
+
+    const standingsHTML = hasStandings
+      ? '<div style="margin-top:16px"><div class="section-label" style="margin-bottom:8px">Final Standings</div>' +
+        '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">' +
+        '<thead><tr style="color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase">' +
+        '<th style="text-align:left;padding:6px 8px">#</th>' +
+        '<th style="text-align:left;padding:6px 8px">Player</th>' +
+        '<th style="text-align:left;padding:6px 8px">Team</th>' +
+        '<th style="text-align:right;padding:6px 8px">Pts</th>' +
+        '<th style="text-align:right;padding:6px 8px">W-L</th>' +
+        '</tr></thead><tbody>' +
+        yr.standings.map((s,i) =>
+          '<tr style="border-top:1px solid var(--border)">' +
+          '<td style="padding:6px 8px;color:var(--muted)">'+(s.rank||i+1)+'</td>' +
+          '<td style="padding:6px 8px;font-weight:700">' + s.name + '</td>' +
+          '<td style="padding:6px 8px"><span class="badge '+s.team+'">'+(s.team==='ladies'?'Ladies':'Gents')+'</span></td>' +
+          '<td style="padding:6px 8px;text-align:right;font-family:'Fredoka One',cursive;color:var(--gold)">' + (s.pts ? fmtPts(s.pts) : '—') + '</td>' +
+          '<td style="padding:6px 8px;text-align:right;color:var(--muted)">' + (s.wins !== undefined ? s.wins+'-'+s.losses : '—') + '</td>' +
+          '</tr>'
+        ).join('') +
+        '</tbody></table></div></div>'
+      : '<div style="color:var(--muted);font-size:13px;margin-top:12px">Standings data coming soon. Provide <code>leagueIds</code> or <code>standings</code> in <code>TOURNAMENT_HISTORY</code> for '+yr.year+'.</div>';
+
+    const teamScoreHTML = yr.teamScore
+      ? '<div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap">' +
+        '<div style="background:rgba(233,30,140,.1);border:1px solid rgba(233,30,140,.3);border-radius:8px;padding:10px 16px;text-align:center">' +
+        '<div style="font-family:'Fredoka One',cursive;font-size:22px;color:var(--ladies)">' + yr.teamScore.ladiesWins + '</div>' +
+        '<div style="font-size:11px;color:var(--muted);letter-spacing:1px">LADIES WINS</div></div>' +
+        '<div style="background:rgba(30,123,233,.1);border:1px solid rgba(30,123,233,.3);border-radius:8px;padding:10px 16px;text-align:center">' +
+        '<div style="font-family:'Fredoka One',cursive;font-size:22px;color:var(--gents)">' + yr.teamScore.gentsWins + '</div>' +
+        '<div style="font-size:11px;color:var(--muted);letter-spacing:1px">GENTS WINS</div></div></div>'
+      : '';
+
+    return '<div class="home-card full-width" style="margin-bottom:20px">' +
+      '<div class="home-card-header">' +
+      '<span class="home-card-icon">📅</span>' +
+      '<span class="home-card-title" style="font-size:20px">' + yr.year + ' Season</span>' +
+      (hasWinner ? '<span class="badge '+yr.winner.team+'" style="margin-left:12px;font-size:13px">'+yr.winner.team.charAt(0).toUpperCase()+yr.winner.team.slice(1)+' Win</span>' : '') +
+      '</div>' +
+      '<div class="home-card-body">' +
+      (hasWinner
+        ? '<div style="display:flex;align-items:center;gap:12px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:14px;margin-bottom:12px">' +
+          '<span style="font-size:32px">🏆</span>' +
+          '<div><div style="font-family:'Fredoka One',cursive;font-size:20px;color:'+teamColor+'">'+yr.winner.name+'</div>' +
+          '<div style="font-size:12px;color:var(--muted)">'+(yr.winner.division||'')+' · '+(yr.winner.team==='ladies'?'Team Ladies':'Team Gents')+'</div></div>' +
+          '</div>'
+        : '<div style="color:var(--muted);font-size:13px;margin-bottom:8px">🏆 Champion TBD — add to <code>TOURNAMENT_HISTORY</code> in the script.</div>') +
+      (yr.notes ? '<div style="font-size:13px;color:var(--muted);margin-bottom:8px;font-style:italic">' + yr.notes + '</div>' : '') +
+      teamScoreHTML +
+      standingsHTML +
+      '</div></div>';
+  }).join('');
+}
+
+// ── DRAFT PAGE ──
+let draftData = null;
+
+function renderDraftPage() {
+  const body = document.getElementById('draft-body');
+  if (!body) return;
+
+  // draftData is populated from data.json
+  draftData = window._draftData || null;
+
+  if (!draftData || !draftData.length) {
+    body.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">' +
+      '<div style="font-size:32px;margin-bottom:12px">📋</div>' +
+      'Draft data will appear here after the next data refresh.<br>' +
+      '<span style="font-size:12px">Make sure your fetch-data.js script has been run and includes draft data.</span>' +
+      '</div>';
+    return;
+  }
+
+  renderDraftTable(draftData);
+
+  // Wire up filters
+  document.getElementById('draft-search').addEventListener('input', applyDraftFilters);
+  document.getElementById('draft-pos-filter').addEventListener('change', applyDraftFilters);
+  document.getElementById('draft-team-filter').addEventListener('change', applyDraftFilters);
+}
+
+function applyDraftFilters() {
+  const search = document.getElementById('draft-search').value.toLowerCase();
+  const pos    = document.getElementById('draft-pos-filter').value;
+  const team   = document.getElementById('draft-team-filter').value;
+
+  const filtered = (window._draftData||[]).filter(p => {
+    if (pos  !== 'all' && p.position !== pos)    return false;
+    if (team !== 'all' && p.pickerTeam !== team) return false;
+    if (search && !p.playerName.toLowerCase().includes(search) &&
+        !p.pickerName.toLowerCase().includes(search)) return false;
+    return true;
+  });
+  renderDraftTable(filtered);
+}
+
+function renderDraftTable(picks) {
+  const body = document.getElementById('draft-body');
+
+  const posColors = { QB:'#f7c948', RB:'#4caf50', WR:'#2196f3', TE:'#ff9800', K:'#9c27b0', DEF:'#e91e63' };
+
+  // Summary stats
+  const ladiesPicks = picks.filter(p=>p.pickerTeam==='ladies').length;
+  const gentsPicks  = picks.filter(p=>p.pickerTeam==='gents').length;
+
+  const posCounts = {};
+  for (const p of picks) posCounts[p.position] = (posCounts[p.position]||0)+1;
+
+  const summaryHTML = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">' +
+    '<div style="background:rgba(233,30,140,.1);border:1px solid rgba(233,30,140,.25);border-radius:8px;padding:8px 14px;text-align:center">' +
+    '<div style="font-family:'Fredoka One',cursive;font-size:20px;color:var(--ladies)">'+ladiesPicks+'</div>' +
+    '<div style="font-size:11px;color:var(--muted)">Ladies Picks</div></div>' +
+    '<div style="background:rgba(30,123,233,.1);border:1px solid rgba(30,123,233,.25);border-radius:8px;padding:8px 14px;text-align:center">' +
+    '<div style="font-family:'Fredoka One',cursive;font-size:20px;color:var(--gents)">'+gentsPicks+'</div>' +
+    '<div style="font-size:11px;color:var(--muted)">Gents Picks</div></div>' +
+    Object.entries(posCounts).sort((a,b)=>b[1]-a[1]).map(([pos,cnt]) =>
+      '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center">' +
+      '<div style="font-family:'Fredoka One',cursive;font-size:20px;color:'+(posColors[pos]||'var(--text)')+'">'+cnt+'</div>' +
+      '<div style="font-size:11px;color:var(--muted)">'+pos+'</div></div>'
+    ).join('') +
+    '</div>';
+
+  const tableHTML = picks.length === 0
+    ? '<div style="color:var(--muted);text-align:center;padding:30px">No picks match your filters.</div>'
+    : '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">' +
+      '<thead><tr style="color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid var(--border)">' +
+      '<th style="text-align:right;padding:8px">Pick</th>' +
+      '<th style="text-align:left;padding:8px">Player</th>' +
+      '<th style="text-align:center;padding:8px">Pos</th>' +
+      '<th style="text-align:left;padding:8px">NFL Team</th>' +
+      '<th style="text-align:left;padding:8px">Drafted By</th>' +
+      '<th style="text-align:center;padding:8px">Team</th>' +
+      '<th style="text-align:left;padding:8px">Division</th>' +
+      '</tr></thead><tbody>' +
+      picks.map((p,i) =>
+        '<tr style="border-bottom:1px solid var(--border);'+(i%2===0?'':'background:rgba(255,255,255,.02)')+'">' +
+        '<td style="padding:7px 8px;text-align:right;color:var(--muted);font-family:'Fredoka One',cursive">'+p.pickNumber+'</td>' +
+        '<td style="padding:7px 8px;font-weight:700">'+p.playerName+'</td>' +
+        '<td style="padding:7px 8px;text-align:center"><span style="background:'+(posColors[p.position]||'#666')+';color:#000;font-weight:800;font-size:10px;padding:2px 7px;border-radius:4px;letter-spacing:.5px">'+p.position+'</span></td>' +
+        '<td style="padding:7px 8px;color:var(--muted)">'+p.nflTeam+'</td>' +
+        '<td style="padding:7px 8px">'+ p.pickerName +'</td>' +
+        '<td style="padding:7px 8px;text-align:center"><span class="badge '+p.pickerTeam+'" style="font-size:10px">'+(p.pickerTeam==='ladies'?'Ladies':'Gents')+'</span></td>' +
+        '<td style="padding:7px 8px;color:var(--muted);font-size:12px">'+p.divisionName+'</td>' +
+        '</tr>'
+      ).join('') +
+      '</tbody></table></div>';
+
+  body.innerHTML = summaryHTML + tableHTML;
+}
+
 let cachedRosterDetails = {};  // leagueId -> {rosterId -> slotData}
 
 const POS_DISPLAY_ORDER = ['QB','RB','WR','TE','K','DEF'];
