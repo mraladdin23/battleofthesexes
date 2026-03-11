@@ -1525,13 +1525,15 @@ function switchPage(page) {
 }
 
 function renderAll() {
+  // Only render what's immediately visible — everything else is lazy-loaded on tab click
   renderLeaderboard();
   renderDivisions();
   renderHomePage();
   renderScoringSettings();
-  initH2HPages();
-  renderDraftPage();
-  renderHistoryPage();
+  // currentPage defaults to 'leaderboard' — init that tab's extras if needed
+  if (currentPage === 'summary' || currentPage === 'h2h') initH2HPages();
+  if (currentPage === 'draft')   renderDraftPage();
+  if (currentPage === 'history') renderHistoryPage();
 }
 
 // ── HOME PAGE ──
@@ -1545,7 +1547,10 @@ function renderHomePage() {
   document.getElementById('commish-note-date').textContent = COMMISH_NOTE.date;
 }
 
-let h2hInited = false;
+let h2hInited     = false;
+let draftInited   = false;
+let historyInited = false;
+
 function initH2HPages() {
   // Data already pre-built by fetch-data.js — just use h2hCached from data.json
   h2hRawData = h2hCached;
@@ -1743,7 +1748,7 @@ async function main() {
     loadingEl.querySelector('p').textContent = 'Loading tournament data…';
 
     // Single fetch of pre-built cache — replaces 1,000+ individual API calls
-    const res = await fetch('data.json?v=' + Date.now());
+    const res = await fetch('data.json');
     if (!res.ok) throw new Error('data.json not found (HTTP ' + res.status + '). Run the GitHub Action first to generate it.');
     const data = await res.json();
 
@@ -1955,6 +1960,8 @@ Write the recap now (2-3 fun sentences, no bullet points, no headers):`;
 
 // ── TOURNAMENT HISTORY PAGE ──
 function renderHistoryPage() {
+  if (historyInited) return;
+  historyInited = true;
   const body = document.getElementById('history-body');
   if (!body) return;
 
@@ -2027,6 +2034,8 @@ function renderHistoryPage() {
 let draftData = null;
 
 function renderDraftPage() {
+  if (draftInited) return;
+  draftInited = true;
   const body = document.getElementById('draft-body');
   if (!body) return;
 
