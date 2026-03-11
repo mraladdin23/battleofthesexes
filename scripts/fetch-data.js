@@ -587,12 +587,65 @@ function buildH2HData(allLeagues) {
 }
 
 // ── Main fetch + build ──
+// ── Fetch and process draft picks for all divisions ──
+async function fetchDraftPicks(division, users) {
+  const lid = division.leagueId;
+  try {
+    // Get draft list for this league
+    const drafts = await fetchWithRetry(`https://api.sleeper.app/v1/league/${lid}/drafts`);
+    if (!drafts || !drafts.length) return [];
+
+    // Use the first (usually only) draft
+    const draft = drafts[0];
+    const draftId = draft.draft_id;
+
+    // Get all picks
+    const picks = await fetchWithRetry(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
+    if (!picks || !picks.length) return [];
+
+    // Build user lookup for this league
+    const userByRosterId = {};
+    for (const u of users) {
+      if (u.user_id) {
+        const sleeperUsername = (u.username || '').toLowerCase().trim();
+        const sleeperDisplay  = (u.display_name || '').toLowerCase().trim();
+        const lookupKey = USER_LOOKUP[sleeperDisplay] ? sleeperDisplay
+                        : USER_LOOKUP[sleeperUsername] ? sleeperUsername : null;
+        const lookup = lookupKey ? USER_LOOKUP[lookupKey]
+                     : { display: u.display_name || sleeperUsername || 'Unknown', team: 'unknown' };
+        userByRosterId[u.roster_id] = { ...lookup, username: sleeperUsername };
+      }
+    }
+
+    return picks.map(p => {
+      const picker = userByRosterId[p.roster_id] || { display: 'Unknown', team: 'unknown' };
+      return {
+        pickNumber:   p.pick_no,
+        round:        p.round,
+        roundPick:    p.draft_slot,
+        playerName:   (p.metadata?.first_name || '') + ' ' + (p.metadata?.last_name || '').trim() || p.player_id,
+        position:     p.metadata?.position || '?',
+        nflTeam:      p.metadata?.team || '?',
+        pickerName:   picker.display,
+        pickerTeam:   picker.team,
+        divisionName: division.name,
+        leagueId:     lid,
+      };
+    });
+  } catch(e) {
+    console.warn(`  Draft fetch failed for ${division.name}: ${e.message}`);
+    return [];
+  }
+}
+
+
 async function main() {
   console.log(`\n🏈 Battle of the Sexes — Data Fetch`);
   console.log(`   Started: ${new Date().toISOString()}`);
   console.log(`   Fetching ${DIVISIONS.length} divisions across ${ALL_WEEKS.length} weeks...\n`);
 
-  const allLeagues = [];
+  const allLeagues   = [];
+  const allDraftPicks = [];
   let done = 0;
 
   for (const division of DIVISIONS) {
@@ -622,8 +675,10 @@ async function main() {
       }
 
       const processed = processLeague({ division, rosters, users, wkPtsMap, wkRaw });
+      const divDraftPicks = await fetchDraftPicks(division, users);
       allLeagues.push({ ...processed, wkRaw });
-      process.stdout.write(` ✓ (${processed.rosters.length} rosters)\n`);
+      process.stdout.write(` ✓ (${processed.rosters.length} rosters, ${divDraftPicks.length} draft picks)\n`);
+      allDraftPicks.push(...divDraftPicks);
 
     } catch(err) {
       process.stdout.write(` ✗ FAILED: ${err.message}\n`);
@@ -639,14 +694,19 @@ async function main() {
   // Strip wkRaw from output (not needed by the browser, saves file size)
   const leaguesForOutput = allLeagues.map(({ wkRaw: _, ...rest }) => rest);
 
+  // Sort draft picks by pick number overall
+  allDraftPicks.sort((a,b) => a.pickNumber - b.pickNumber);
+
   const output = {
     meta: {
       generatedAt:      new Date().toISOString(),
       totalDivisions:   leaguesForOutput.length,
       totalRosters:     leaguesForOutput.reduce((s, l) => s + l.rosters.length, 0),
+      totalDraftPicks:  allDraftPicks.length,
       weeksWithH2H:     h2hWeeksAvailable,
     },
     leagues:    leaguesForOutput,
+    draftPicks: allDraftPicks,
     h2hByWeek,
   };
 
