@@ -491,7 +491,7 @@ footer a { color:var(--muted); text-decoration:none; }
 </div>
 
 
-<div id="loading"><div class="spinner"></div><p>Fetching live Sleeper data&hellip;</p></div>
+<div id="loading"><div class="spinner"></div><p>Loading tournament data…</p></div>
 
 <!-- PAGE: HOME -->
 <div class="page active" id="page-home">
@@ -509,38 +509,7 @@ footer a { color:var(--muted); text-decoration:none; }
       </div>
     </div>
 
-    <!-- Quick links / nav cards -->
-    <div class="home-card">
-      <div class="home-card-header"><span class="home-card-icon">📊</span><span class="home-card-title">Weekly Summary</span></div>
-      <div class="home-card-body">
-        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">AI-generated recap of the latest week — top scorers, blowouts, upsets &amp; more.</p>
-        <button class="filter-pill active" onclick="switchPage('summary')" style="cursor:pointer">Go to Weekly Summary →</button>
-      </div>
-    </div>
 
-    <div class="home-card">
-      <div class="home-card-header"><span class="home-card-icon">⚔️</span><span class="home-card-title">Head-to-Head</span></div>
-      <div class="home-card-body">
-        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Cross-gender matchup results week by week — who's winning the battle?</p>
-        <button class="filter-pill active" onclick="switchPage('h2h')" style="cursor:pointer">Go to Head-to-Head →</button>
-      </div>
-    </div>
-
-    <div class="home-card">
-      <div class="home-card-header"><span class="home-card-icon">🏆</span><span class="home-card-title">Tournament History</span></div>
-      <div class="home-card-body">
-        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Past champions, final standings, and year-by-year results going back to day one.</p>
-        <button class="filter-pill active" onclick="switchPage('history')" style="cursor:pointer">Go to History →</button>
-      </div>
-    </div>
-
-    <div class="home-card">
-      <div class="home-card-header"><span class="home-card-icon">📋</span><span class="home-card-title">Draft Summary</span></div>
-      <div class="home-card-body">
-        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Full draft results across all 28 divisions — see who grabbed who and when.</p>
-        <button class="filter-pill active" onclick="switchPage('draft')" style="cursor:pointer">Go to Draft →</button>
-      </div>
-    </div>
 
   </div>
 </div>
@@ -654,7 +623,11 @@ footer a { color:var(--muted); text-decoration:none; }
         <span class="home-card-icon">📋</span>
         <span class="home-card-title">Draft Summary</span>
         <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <input id="draft-search" type="text" placeholder="Search player or manager…" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:20px;font-family:inherit;font-size:13px;outline:none;width:200px">
+          <div style="display:flex;gap:4px">
+            <button id="draft-view-table"  class="filter-pill active" style="font-size:12px;padding:4px 12px">📋 All Picks</button>
+            <button id="draft-view-player" class="filter-pill"        style="font-size:12px;padding:4px 12px">👤 By Manager</button>
+          </div>
+          <input id="draft-search" type="text" placeholder="Search player or manager…" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:20px;font-family:inherit;font-size:13px;outline:none;width:190px">
           <select id="draft-pos-filter" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:20px;font-family:inherit;font-size:13px;outline:none">
             <option value="all">All Positions</option>
             <option value="QB">QB</option>
@@ -1744,25 +1717,34 @@ function renderH2H() {
 // ── MAIN — loads from pre-built data.json (< 1 second) ──
 async function main() {
   const loadingEl = document.getElementById('loading');
+  const loadMsg   = loadingEl.querySelector('p');
   try {
-    loadingEl.querySelector('p').textContent = 'Loading tournament data…';
+    loadMsg.textContent = 'Loading data.json…';
 
-    // Single fetch of pre-built cache — replaces 1,000+ individual API calls
     const res = await fetch('data.json');
-    if (!res.ok) throw new Error('data.json not found (HTTP ' + res.status + '). Run the GitHub Action first to generate it.');
+
+    if (!res.ok) {
+      throw new Error('data.json returned HTTP ' + res.status + '. Please run the GitHub Action (Actions tab → Refresh Sleeper Data → Run workflow) to generate it.');
+    }
+
+    loadMsg.textContent = 'Parsing data…';
     const data = await res.json();
 
-    // Populate globals
-    allData         = data.leagues   || [];
-    h2hCached       = data.h2hByWeek  || {};
+    // Validate it has real data, not just the placeholder
+    if (!data.leagues || data.leagues.length === 0) {
+      throw new Error('data.json exists but contains no league data. Please run the GitHub Action (Actions tab → Refresh Sleeper Data → Run workflow) to populate it.');
+    }
+
+    allData           = data.leagues    || [];
+    h2hCached         = data.h2hByWeek  || {};
     window._draftData = data.draftPicks || [];
 
-    // Show freshness info
+    // Show freshness
     if (data.meta?.generatedAt) {
       const d = new Date(data.meta.generatedAt);
       const ago = Math.round((Date.now() - d) / 3600000);
       const freshness = ago < 1 ? 'just now' : ago < 24 ? ago + 'h ago' : Math.round(ago/24) + 'd ago';
-      loadingEl.querySelector('p').textContent = 'Data refreshed ' + freshness;
+      loadMsg.textContent = 'Data refreshed ' + freshness + ' · ' + allData.length + ' divisions loaded';
     }
 
     loadingEl.style.display = 'none';
@@ -1846,14 +1828,6 @@ const TOURNAMENT_HISTORY = [
     leagueIds: [],
     standings: []
   },
-  {
-    year: 2022,
-    winner: null,
-    teamScore: null,
-    notes: '',
-    leagueIds: [],
-    standings: []
-  },
 ];
 
 
@@ -1882,81 +1856,79 @@ async function generateAIRecap() {
   btn.textContent = '⏳ Writing recap…';
   box.innerHTML = '<span style="color:var(--muted)">Generating…</span>';
 
-  // Build stats for the AI
+  // Build stats
   const allScores = wkData.flatMap(m => [
     {name: m.ladyName, team: 'ladies', pts: m.ladyPts},
     {name: m.gentName, team: 'gents',  pts: m.gentPts}
   ]).sort((a,b) => b.pts - a.pts);
 
-  const topScorer   = allScores[0];
-  const lowScorer   = allScores[allScores.length - 1];
-  const sorted      = [...wkData].sort((a,b) => b.diff - a.diff);
-  const blowout     = sorted[0];
-  const closest     = sorted[sorted.length - 1];
+  const topScorer = allScores[0];
+  const lowScorer = allScores[allScores.length - 1];
+  const sorted    = [...wkData].sort((a,b) => b.diff - a.diff);
+  const blowout   = sorted[0];
+  const closest   = sorted[sorted.length - 1];
   let lW=0, gW=0;
   for (const m of wkData) m.winner === 'ladies' ? lW++ : gW++;
 
-  // Top 10 scorers
   const top10 = allScores.slice(0, 10).map((p,i) =>
     (i+1)+'. '+p.name+' ('+p.team+') — '+fmtPts(p.pts)+' pts'
   ).join('\n');
 
-  // Check for streaks from allData (multi-week wins)
+  // Streak detection
   const streakInfo = [];
-  if (h2hRawData) {
-    const allWeeks = Object.keys(h2hRawData).map(Number).sort((a,b)=>a-b);
-    const currentWkIdx = allWeeks.indexOf(summaryWeek);
-    if (currentWkIdx >= 2) {
-      const prev2 = allWeeks.slice(Math.max(0, currentWkIdx-2), currentWkIdx+1);
-      const winnersByName = {};
-      for (const w of prev2) {
-        for (const m of (h2hRawData[w]||[])) {
-          const winner = m.winner === 'ladies' ? m.ladyName : m.gentName;
-          winnersByName[winner] = (winnersByName[winner]||[]);
-          winnersByName[winner].push(w);
-        }
+  const allWeeks = Object.keys(h2hRawData).map(Number).sort((a,b)=>a-b);
+  const wkIdx = allWeeks.indexOf(summaryWeek);
+  if (wkIdx >= 2) {
+    const prev3 = allWeeks.slice(Math.max(0, wkIdx-2), wkIdx+1);
+    const wins = {};
+    for (const w of prev3) {
+      for (const m of (h2hRawData[w]||[])) {
+        const winner = m.winner === 'ladies' ? m.ladyName : m.gentName;
+        wins[winner] = (wins[winner]||0) + 1;
       }
-      for (const [name, weeks] of Object.entries(winnersByName)) {
-        if (weeks.length >= prev2.length) streakInfo.push(name + ' won all of weeks ' + weeks.join(', '));
-      }
+    }
+    for (const [name, cnt] of Object.entries(wins)) {
+      if (cnt >= prev3.length) streakInfo.push(name + ' has been on a hot streak');
     }
   }
 
-  const prompt = `You are the official recapper for the "Battle of the Sexes" fantasy football tournament — a 28-division competition where Team Ladies faces Team Gents all season. Write a SHORT, FUN, PLAYFUL 2-3 sentence recap of Week ${summaryWeek} results. Use trash talk, humor, and celebration. Keep it under 80 words.
-
-WEEK ${summaryWeek} DATA:
-- Team record: Ladies ${lW}-${gW} Gents (${lW > gW ? 'Ladies won the week!' : gW > lW ? 'Gents won the week!' : 'Tied week!'})
-- Top scorer: ${topScorer.name} (${topScorer.team}) with ${fmtPts(topScorer.pts)} pts
-- Lowest scorer: ${lowScorer.name} (${lowScorer.team}) with ${fmtPts(lowScorer.pts)} pts
-- Biggest blowout: ${blowout.winner==='ladies'?blowout.ladyName:blowout.gentName} beat ${blowout.winner==='ladies'?blowout.gentName:blowout.ladyName} by ${fmtPts(blowout.diff)} pts (${blowout.divName})
-- Closest matchup: ${closest.winner==='ladies'?closest.ladyName:closest.gentName} edged ${closest.winner==='ladies'?closest.gentName:closest.ladyName} by only ${fmtPts(closest.diff)} pts (${closest.divName})
-${streakInfo.length ? '- Streaks: ' + streakInfo.join('; ') : ''}
-
-Top 10 scorers this week:
-${top10}
-
-Write the recap now (2-3 fun sentences, no bullet points, no headers):`;
+  const prompt = 'You are the official recapper for the "Battle of the Sexes" fantasy football tournament — 28 divisions, Team Ladies vs Team Gents. Write a SHORT, FUN, PLAYFUL 2-3 sentence recap of Week ' + summaryWeek + '. Use trash talk, humor, celebration. Under 80 words.\n\n' +
+    'Week ' + summaryWeek + ' stats:\n' +
+    '- Record: Ladies ' + lW + '-' + gW + ' Gents (' + (lW>gW?'Ladies won!':gW>lW?'Gents won!':'Tied!') + ')\n' +
+    '- Top scorer: ' + topScorer.name + ' (' + topScorer.team + ') ' + fmtPts(topScorer.pts) + ' pts\n' +
+    '- Lowest scorer: ' + lowScorer.name + ' (' + lowScorer.team + ') ' + fmtPts(lowScorer.pts) + ' pts\n' +
+    '- Biggest blowout: ' + (blowout.winner==='ladies'?blowout.ladyName:blowout.gentName) + ' beat ' + (blowout.winner==='ladies'?blowout.gentName:blowout.ladyName) + ' by ' + fmtPts(blowout.diff) + ' pts\n' +
+    '- Closest match: ' + (closest.winner==='ladies'?closest.ladyName:closest.gentName) + ' edged ' + (closest.winner==='ladies'?closest.gentName:closest.ladyName) + ' by ' + fmtPts(closest.diff) + ' pts\n' +
+    (streakInfo.length ? '- Streaks: ' + streakInfo.join('; ') + '\n' : '') +
+    '- Top 10 scorers:\n' + top10 + '\n\n' +
+    'Write the recap now (2-3 fun sentences, no bullets, no headers):';
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 200,
         messages: [{ role: 'user', content: prompt }]
       })
     });
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      throw new Error((err.error?.message || 'HTTP ' + res.status) + ' — the AI recap requires the site to be opened via Claude.ai artifacts to work.');
+    }
     const data = await res.json();
     const text = data.content?.find(b => b.type === 'text')?.text || 'Could not generate recap.';
     box.innerHTML = '<span style="font-size:20px">🏈</span> ' + text.trim();
   } catch(err) {
-    box.innerHTML = '<span style="color:#e55">Error generating recap: ' + err.message + '</span>';
+    box.innerHTML = '<span style="color:#e67e22;font-size:13px">⚠️ AI recap is only available when the site is embedded in Claude.ai. For your public site, consider pre-generating recaps and storing them in the <code>COMMISH_NOTE</code> field.</span>';
+    console.warn('AI recap error:', err.message);
   } finally {
     btn.disabled = false;
     btn.textContent = '✨ Regenerate';
   }
 }
+
 
 // ── TOURNAMENT HISTORY PAGE ──
 function renderHistoryPage() {
@@ -2031,72 +2003,172 @@ function renderHistoryPage() {
 }
 
 // ── DRAFT PAGE ──
-let draftData = null;
+let draftData    = null;
+let draftView    = 'table';   // 'table' | 'player'
+let draftFilters = { search: '', pos: 'all', team: 'all' };
 
 function renderDraftPage() {
   if (draftInited) return;
   draftInited = true;
+
+  draftData = window._draftData || [];
+
   const body = document.getElementById('draft-body');
   if (!body) return;
 
-  // draftData is populated from data.json
-  draftData = window._draftData || null;
-
-  if (!draftData || !draftData.length) {
+  if (!draftData.length) {
     body.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:40px">' +
       '<div style="font-size:32px;margin-bottom:12px">📋</div>' +
-      'Draft data will appear here after the next data refresh.<br>' +
-      '<span style="font-size:12px">Make sure your fetch-data.js script has been run and includes draft data.</span>' +
+      'Draft data will appear here after the next data refresh.' +
       '</div>';
     return;
   }
 
-  renderDraftTable(draftData);
+  // Compute ADP for every player across all divisions
+  window._adpMap = {};
+  const picksByPlayer = {};
+  for (const p of draftData) {
+    const key = p.playerName + '|' + p.position;
+    if (!picksByPlayer[key]) picksByPlayer[key] = [];
+    picksByPlayer[key].push(p.pickNumber);
+  }
+  for (const [key, picks] of Object.entries(picksByPlayer)) {
+    window._adpMap[key] = (picks.reduce((s,v)=>s+v,0) / picks.length).toFixed(1);
+  }
 
   // Wire up filters
-  document.getElementById('draft-search').addEventListener('input', applyDraftFilters);
-  document.getElementById('draft-pos-filter').addEventListener('change', applyDraftFilters);
-  document.getElementById('draft-team-filter').addEventListener('change', applyDraftFilters);
+  document.getElementById('draft-search').addEventListener('input', e => {
+    draftFilters.search = e.target.value.toLowerCase();
+    applyDraftFilters();
+  });
+  document.getElementById('draft-pos-filter').addEventListener('change', e => {
+    draftFilters.pos = e.target.value;
+    applyDraftFilters();
+  });
+  document.getElementById('draft-team-filter').addEventListener('change', e => {
+    draftFilters.team = e.target.value;
+    applyDraftFilters();
+  });
+
+  // View toggle buttons
+  document.getElementById('draft-view-table').addEventListener('click', () => {
+    draftView = 'table';
+    document.getElementById('draft-view-table').classList.add('active');
+    document.getElementById('draft-view-player').classList.remove('active');
+    applyDraftFilters();
+  });
+  document.getElementById('draft-view-player').addEventListener('click', () => {
+    draftView = 'player';
+    document.getElementById('draft-view-player').classList.add('active');
+    document.getElementById('draft-view-table').classList.remove('active');
+    applyDraftFilters();
+  });
+
+  applyDraftFilters();
 }
 
 function applyDraftFilters() {
-  const search = document.getElementById('draft-search').value.toLowerCase();
-  const pos    = document.getElementById('draft-pos-filter').value;
-  const team   = document.getElementById('draft-team-filter').value;
-
-  const filtered = (window._draftData||[]).filter(p => {
-    if (pos  !== 'all' && p.position !== pos)    return false;
-    if (team !== 'all' && p.pickerTeam !== team) return false;
-    if (search && !p.playerName.toLowerCase().includes(search) &&
-        !p.pickerName.toLowerCase().includes(search)) return false;
+  const { search, pos, team } = draftFilters;
+  const filtered = draftData.filter(p => {
+    if (pos  !== 'all' && p.position   !== pos)  return false;
+    if (team !== 'all' && p.pickerTeam !== team)  return false;
+    if (search) {
+      const inPlayer = p.playerName.toLowerCase().includes(search);
+      const inPicker = p.pickerName.toLowerCase().includes(search);
+      if (!inPlayer && !inPicker) return false;
+    }
     return true;
   });
-  renderDraftTable(filtered);
+
+  if (draftView === 'player' && search.length >= 2) {
+    renderDraftPlayerView(filtered, search);
+  } else {
+    renderDraftTable(filtered);
+  }
+}
+
+function renderDraftPlayerView(picks, search) {
+  const body = document.getElementById('draft-body');
+  const posColors = { QB:'#f7c948', RB:'#4caf50', WR:'#2196f3', TE:'#ff9800', K:'#9c27b0', DEF:'#e91e63' };
+
+  // Group picks by picker name matching the search
+  const byPicker = {};
+  for (const p of picks) {
+    if (p.pickerName.toLowerCase().includes(search)) {
+      if (!byPicker[p.pickerName]) byPicker[p.pickerName] = [];
+      byPicker[p.pickerName].push(p);
+    }
+  }
+
+  if (!Object.keys(byPicker).length) {
+    body.innerHTML = '<div style="color:var(--muted);text-align:center;padding:30px">No managers found matching "' + search + '".</div>';
+    return;
+  }
+
+  body.innerHTML = Object.entries(byPicker).map(([name, manPicks]) => {
+    const team = manPicks[0]?.pickerTeam || 'unknown';
+    const div  = manPicks[0]?.divisionName || '';
+    const byRound = {};
+    for (const p of manPicks) {
+      if (!byRound[p.round]) byRound[p.round] = [];
+      byRound[p.round].push(p);
+    }
+
+    const rounds = Object.keys(byRound).map(Number).sort((a,b)=>a-b);
+
+    return '<div class="home-card full-width" style="margin-bottom:16px">' +
+      '<div class="home-card-header">' +
+        '<span class="home-card-icon">' + (team==='ladies'?'👩':'👨') + '</span>' +
+        '<span class="home-card-title">' + name + '</span>' +
+        '<span class="badge ' + team + '" style="margin-left:10px">' + (team==='ladies'?'Team Ladies':'Team Gents') + '</span>' +
+        '<span style="margin-left:10px;color:var(--muted);font-size:12px">' + div + '</span>' +
+      '</div>' +
+      '<div class="home-card-body">' +
+        rounds.map(r => {
+          const rPicks = byRound[r].sort((a,b)=>a.pickNumber-b.pickNumber);
+          return '<div style="margin-bottom:12px">' +
+            '<div style="font-family:\'Fredoka One\',cursive;font-size:12px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Round ' + r + '</div>' +
+            '<div style="display:flex;flex-wrap:wrap;gap:8px">' +
+            rPicks.map(p => {
+              const adpKey = p.playerName + '|' + p.position;
+              const adp = window._adpMap[adpKey] || '—';
+              return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;min-width:140px">' +
+                '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">' +
+                  '<span style="background:' + (posColors[p.position]||'#666') + ';color:#000;font-weight:800;font-size:10px;padding:1px 6px;border-radius:3px">' + p.position + '</span>' +
+                  '<span style="font-size:10px;color:var(--muted)">Pick ' + p.pickNumber + '</span>' +
+                '</div>' +
+                '<div style="font-weight:700;font-size:13px">' + p.playerName + '</div>' +
+                '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + p.nflTeam + ' · ADP ' + adp + '</div>' +
+              '</div>';
+            }).join('') +
+            '</div></div>';
+        }).join('') +
+      '</div></div>';
+  }).join('');
 }
 
 function renderDraftTable(picks) {
   const body = document.getElementById('draft-body');
-
   const posColors = { QB:'#f7c948', RB:'#4caf50', WR:'#2196f3', TE:'#ff9800', K:'#9c27b0', DEF:'#e91e63' };
 
-  // Summary stats
+  // Summary bar
   const ladiesPicks = picks.filter(p=>p.pickerTeam==='ladies').length;
   const gentsPicks  = picks.filter(p=>p.pickerTeam==='gents').length;
-
-  const posCounts = {};
+  const posCounts   = {};
   for (const p of picks) posCounts[p.position] = (posCounts[p.position]||0)+1;
 
-  const summaryHTML = '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">' +
+  const summaryHTML =
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">' +
     '<div style="background:rgba(233,30,140,.1);border:1px solid rgba(233,30,140,.25);border-radius:8px;padding:8px 14px;text-align:center">' +
-    '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:var(--ladies)">'+ladiesPicks+'</div>' +
-    '<div style="font-size:11px;color:var(--muted)">Ladies Picks</div></div>' +
+      '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:var(--ladies)">' + ladiesPicks + '</div>' +
+      '<div style="font-size:11px;color:var(--muted)">Ladies Picks</div></div>' +
     '<div style="background:rgba(30,123,233,.1);border:1px solid rgba(30,123,233,.25);border-radius:8px;padding:8px 14px;text-align:center">' +
-    '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:var(--gents)">'+gentsPicks+'</div>' +
-    '<div style="font-size:11px;color:var(--muted)">Gents Picks</div></div>' +
-    Object.entries(posCounts).sort((a,b)=>b[1]-a[1]).map(([pos,cnt]) =>
+      '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:var(--gents)">' + gentsPicks + '</div>' +
+      '<div style="font-size:11px;color:var(--muted)">Gents Picks</div></div>' +
+    Object.entries(posCounts).sort((a,b)=>b[1]-a[1]).map(([p,c]) =>
       '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center">' +
-      '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:'+(posColors[pos]||'var(--text)')+'">'+cnt+'</div>' +
-      '<div style="font-size:11px;color:var(--muted)">'+pos+'</div></div>'
+        '<div style="font-family:\'Fredoka One\',cursive;font-size:20px;color:' + (posColors[p]||'var(--text)') + '">' + c + '</div>' +
+        '<div style="font-size:11px;color:var(--muted)">' + p + '</div></div>'
     ).join('') +
     '</div>';
 
@@ -2104,29 +2176,37 @@ function renderDraftTable(picks) {
     ? '<div style="color:var(--muted);text-align:center;padding:30px">No picks match your filters.</div>'
     : '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">' +
       '<thead><tr style="color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid var(--border)">' +
-      '<th style="text-align:right;padding:8px">Pick</th>' +
-      '<th style="text-align:left;padding:8px">Player</th>' +
-      '<th style="text-align:center;padding:8px">Pos</th>' +
-      '<th style="text-align:left;padding:8px">NFL Team</th>' +
-      '<th style="text-align:left;padding:8px">Drafted By</th>' +
-      '<th style="text-align:center;padding:8px">Team</th>' +
-      '<th style="text-align:left;padding:8px">Division</th>' +
+        '<th style="text-align:right;padding:8px 6px;width:50px">Pick</th>' +
+        '<th style="text-align:left;padding:8px 6px">Player</th>' +
+        '<th style="text-align:center;padding:8px 6px">Pos</th>' +
+        '<th style="text-align:left;padding:8px 6px">NFL Team</th>' +
+        '<th style="text-align:right;padding:8px 6px">ADP</th>' +
+        '<th style="text-align:left;padding:8px 6px">Drafted By</th>' +
+        '<th style="text-align:center;padding:8px 6px">Team</th>' +
+        '<th style="text-align:left;padding:8px 6px">Division</th>' +
       '</tr></thead><tbody>' +
-      picks.map((p,i) =>
-        '<tr style="border-bottom:1px solid var(--border);'+(i%2===0?'':'background:rgba(255,255,255,.02)')+'">' +
-        '<td style="padding:7px 8px;text-align:right;color:var(--muted);font-family:\'Fredoka One\',cursive">'+p.pickNumber+'</td>' +
-        '<td style="padding:7px 8px;font-weight:700">'+p.playerName+'</td>' +
-        '<td style="padding:7px 8px;text-align:center"><span style="background:'+(posColors[p.position]||'#666')+';color:#000;font-weight:800;font-size:10px;padding:2px 7px;border-radius:4px;letter-spacing:.5px">'+p.position+'</span></td>' +
-        '<td style="padding:7px 8px;color:var(--muted)">'+p.nflTeam+'</td>' +
-        '<td style="padding:7px 8px">'+ p.pickerName +'</td>' +
-        '<td style="padding:7px 8px;text-align:center"><span class="badge '+p.pickerTeam+'" style="font-size:10px">'+(p.pickerTeam==='ladies'?'Ladies':'Gents')+'</span></td>' +
-        '<td style="padding:7px 8px;color:var(--muted);font-size:12px">'+p.divisionName+'</td>' +
-        '</tr>'
-      ).join('') +
+      picks.map((p,i) => {
+        const adpKey = p.playerName + '|' + p.position;
+        const adp    = window._adpMap ? (window._adpMap[adpKey] || '—') : '—';
+        const adpDiff = window._adpMap && p.pickNumber && window._adpMap[adpKey]
+          ? (p.pickNumber - parseFloat(window._adpMap[adpKey])).toFixed(1) : null;
+        const adpColor = adpDiff === null ? '' : adpDiff < -5 ? 'color:#4caf50' : adpDiff > 5 ? 'color:#e57373' : 'color:var(--muted)';
+        return '<tr style="border-bottom:1px solid var(--border);' + (i%2===0?'':'background:rgba(255,255,255,.015)') + '">' +
+          '<td style="padding:7px 6px;text-align:right;color:var(--muted);font-family:\'Fredoka One\',cursive">' + p.pickNumber + '</td>' +
+          '<td style="padding:7px 6px;font-weight:700">' + p.playerName + '</td>' +
+          '<td style="padding:7px 6px;text-align:center"><span style="background:' + (posColors[p.position]||'#666') + ';color:#000;font-weight:800;font-size:10px;padding:2px 6px;border-radius:3px">' + p.position + '</span></td>' +
+          '<td style="padding:7px 6px;color:var(--muted)">' + p.nflTeam + '</td>' +
+          '<td style="padding:7px 6px;text-align:right;font-size:12px;' + adpColor + '">' + adp + (adpDiff!==null&&adpDiff!==0?' <span style="font-size:10px">(' + (adpDiff>0?'+':'') + adpDiff + ')</span>':'') + '</td>' +
+          '<td style="padding:7px 6px;font-weight:600">' + p.pickerName + '</td>' +
+          '<td style="padding:7px 6px;text-align:center"><span class="badge ' + p.pickerTeam + '" style="font-size:10px">' + (p.pickerTeam==='ladies'?'Ladies':'Gents') + '</span></td>' +
+          '<td style="padding:7px 6px;color:var(--muted);font-size:12px">' + p.divisionName + '</td>' +
+          '</tr>';
+      }).join('') +
       '</tbody></table></div>';
 
   body.innerHTML = summaryHTML + tableHTML;
 }
+
 
 let cachedRosterDetails = {};  // leagueId -> {rosterId -> slotData}
 
