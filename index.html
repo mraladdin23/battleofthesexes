@@ -9,6 +9,7 @@
 <meta property="og:description" content="28 divisions. Team Ladies vs Team Gents. One champion. Follow the action all season.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0a0a0f">
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -2832,7 +2833,21 @@ function bumpCounter() {
 }
 
 main();
+
+// Force Twitter/X widget to initialize after page load
+// (needed because the embed is inside a conditionally-rendered layout)
+window.addEventListener('load', function() {
+  if (window.twttr && window.twttr.widgets) {
+    window.twttr.widgets.load(document.getElementById('twitter-feed-wrap'));
+  } else {
+    // widgets.js not loaded yet — wait for it
+    window.twttr = window.twttr || {};
+    window.twttr._e = window.twttr._e || [];
+    window.twttr._e.push(function() {
+      window.twttr.widgets.load(document.getElementById('twitter-feed-wrap'));
+    });
+  }
+});
 </script>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>
