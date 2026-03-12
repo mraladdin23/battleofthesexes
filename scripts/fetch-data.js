@@ -588,44 +588,45 @@ function buildH2HData(allLeagues) {
 
 // ── Main fetch + build ──
 // ── Fetch and process draft picks for all divisions ──
-async function fetchDraftPicks(division, users) {
+async function fetchDraftPicks(division, rosters, users) {
   const lid = division.leagueId;
   try {
-    // Get draft list for this league
     const drafts = await fetchWithRetry(`https://api.sleeper.app/v1/league/${lid}/drafts`);
     if (!drafts || !drafts.length) return [];
 
-    // Use the first (usually only) draft
-    const draft = drafts[0];
+    const draft   = drafts[0];
     const draftId = draft.draft_id;
-
-    // Get all picks
-    const picks = await fetchWithRetry(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
+    const picks   = await fetchWithRetry(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
     if (!picks || !picks.length) return [];
 
-    // Build user lookup for this league
-    const userByRosterId = {};
+    // Build user lookup keyed by user_id
+    const userById = {};
     for (const u of users) {
-      if (u.user_id) {
-        const sleeperUsername = (u.username || '').toLowerCase().trim();
-        const sleeperDisplay  = (u.display_name || '').toLowerCase().trim();
-        const lookupKey = USER_LOOKUP[sleeperDisplay] ? sleeperDisplay
-                        : USER_LOOKUP[sleeperUsername] ? sleeperUsername : null;
-        const lookup = lookupKey ? USER_LOOKUP[lookupKey]
-                     : { display: u.display_name || sleeperUsername || 'Unknown', team: 'unknown' };
-        userByRosterId[u.roster_id] = { ...lookup, username: sleeperUsername };
-      }
+      if (u.user_id) userById[String(u.user_id)] = u;
+    }
+
+    // Map roster_id → owner display info via rosters (which have owner_id = user_id)
+    const infoByRosterId = {};
+    for (const r of rosters) {
+      const u = userById[String(r.owner_id)] || {};
+      const sleeperUsername = (u.username     || '').toLowerCase().trim();
+      const sleeperDisplay  = (u.display_name || '').toLowerCase().trim();
+      const lookupKey = USER_LOOKUP[sleeperDisplay]  ? sleeperDisplay
+                      : USER_LOOKUP[sleeperUsername] ? sleeperUsername : null;
+      const lookup = lookupKey ? USER_LOOKUP[lookupKey]
+                   : { display: u.display_name || sleeperUsername || 'Unknown', team: 'unknown' };
+      infoByRosterId[String(r.roster_id)] = { ...lookup, username: sleeperUsername };
     }
 
     return picks.map(p => {
-      const picker = userByRosterId[p.roster_id] || { display: 'Unknown', team: 'unknown' };
+      const picker = infoByRosterId[String(p.roster_id)] || { display: 'Unknown', team: 'unknown' };
       return {
         pickNumber:   p.pick_no,
         round:        p.round,
         roundPick:    p.draft_slot,
-        playerName:   (p.metadata?.first_name || '') + ' ' + (p.metadata?.last_name || '').trim() || p.player_id,
+        playerName:   ((p.metadata?.first_name || '') + ' ' + (p.metadata?.last_name || '')).trim() || p.player_id,
         position:     p.metadata?.position || '?',
-        nflTeam:      p.metadata?.team || '?',
+        nflTeam:      p.metadata?.team || 'FA',
         pickerName:   picker.display,
         pickerTeam:   picker.team,
         divisionName: division.name,
@@ -675,7 +676,7 @@ async function main() {
       }
 
       const processed = processLeague({ division, rosters, users, wkPtsMap, wkRaw });
-      const divDraftPicks = await fetchDraftPicks(division, users);
+      const divDraftPicks = await fetchDraftPicks(division, rosters, users);
       allLeagues.push({ ...processed, wkRaw });
       process.stdout.write(` ✓ (${processed.rosters.length} rosters, ${divDraftPicks.length} draft picks)\n`);
       allDraftPicks.push(...divDraftPicks);
