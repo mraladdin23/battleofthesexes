@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Battle of the Sexes 2025 | Fantasy Football Tournament</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏈</text></svg>">
+<meta property="og:title" content="Battle of the Sexes 2025 — Fantasy Football Tournament">
+<meta property="og:description" content="28 divisions. Team Ladies vs Team Gents. One champion. Follow the action all season.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0a0f">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -477,17 +482,17 @@ footer a { color:var(--muted); text-decoration:none; }
 
 
 <div id="main-nav">
-  <div class="nav-tab" data-page="home">&#127968; Home</div>
-  <div class="nav-tab active" data-page="leaderboard">&#127942; Leaderboard</div>
-  <div class="nav-tab" data-page="divisions">&#128203; Divisions</div>
+  <div class="nav-tab active" data-page="home">&#127968; Home</div>
+  <div class="nav-tab" data-page="register">&#9997; Register</div>
+  <div class="nav-tab" data-page="rules">&#128218; Rules</div>
+  <div class="nav-tab" data-page="draft">&#128196; Draft</div>
+  <div class="nav-tab" data-page="leaderboard">&#127942; Leaderboard</div>
   <div class="nav-tab" data-page="rosters">&#127944; Top Rosters</div>
+  <div class="nav-tab" data-page="divisions">&#128203; Divisions</div>
   <div class="nav-tab" data-page="summary">&#128202; Weekly Summary</div>
   <div class="nav-tab" data-page="h2h">&#9876; Head-to-Head</div>
-  <div class="nav-tab" data-page="draft">&#128196; Draft</div>
-  <div class="nav-tab" data-page="history">&#128081; Tournament History</div>
   <div class="nav-tab" data-page="playoffs">&#127942; Playoffs</div>
-  <div class="nav-tab" data-page="rules">&#128218; Rules</div>
-  <div class="nav-tab" data-page="register">&#9997; Register</div>
+  <div class="nav-tab" data-page="history">&#128081; Tournament History</div>
 </div>
 
 
@@ -498,7 +503,7 @@ footer a { color:var(--muted); text-decoration:none; }
   <div class="home-grid">
 
     <!-- Commish Notes -->
-    <div class="home-card full-width">
+    <div class="home-card">
       <div class="home-card-header">
         <span class="home-card-icon">📣</span>
         <span class="home-card-title">Notes from the Commish</span>
@@ -509,7 +514,31 @@ footer a { color:var(--muted); text-decoration:none; }
       </div>
     </div>
 
-
+    <!-- Twitter / X Feed -->
+    <div class="home-card">
+      <div class="home-card-header">
+        <span class="home-card-icon">𝕏</span>
+        <span class="home-card-title">@FF_BattleOTS</span>
+        <a href="https://x.com/FF_BattleOTS" target="_blank" rel="noopener"
+           style="margin-left:auto;font-size:12px;color:var(--muted);text-decoration:none;font-family:'Fredoka One',cursive;letter-spacing:.5px">
+          Follow ↗
+        </a>
+      </div>
+      <div class="home-card-body" style="padding:0;overflow:hidden;border-radius:0 0 12px 12px">
+        <div id="twitter-feed-wrap" style="max-height:520px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent">
+          <a class="twitter-timeline"
+             data-theme="dark"
+             data-chrome="noheader nofooter noborders transparent"
+             data-tweet-limit="8"
+             data-dnt="true"
+             href="https://twitter.com/FF_BattleOTS">
+            <div style="padding:20px;color:var(--muted);font-size:13px;text-align:center">
+              Loading tweets…
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -2804,5 +2833,6 @@ function bumpCounter() {
 
 main();
 </script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>
