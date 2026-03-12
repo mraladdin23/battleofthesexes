@@ -9,7 +9,6 @@
 <meta property="og:description" content="28 divisions. Team Ladies vs Team Gents. One champion. Follow the action all season.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0a0a0f">
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -515,29 +514,24 @@ footer a { color:var(--muted); text-decoration:none; }
       </div>
     </div>
 
-    <!-- Twitter / X Feed -->
+    <!-- X / Twitter profile card -->
     <div class="home-card">
       <div class="home-card-header">
         <span class="home-card-icon">𝕏</span>
-        <span class="home-card-title">@FF_BattleOTS</span>
-        <a href="https://x.com/FF_BattleOTS" target="_blank" rel="noopener"
-           style="margin-left:auto;font-size:12px;color:var(--muted);text-decoration:none;font-family:'Fredoka One',cursive;letter-spacing:.5px">
-          Follow ↗
-        </a>
+        <span class="home-card-title">Follow the Tournament</span>
       </div>
-      <div class="home-card-body" style="padding:0;overflow:hidden;border-radius:0 0 12px 12px">
-        <div id="twitter-feed-wrap" style="max-height:520px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent">
-          <a class="twitter-timeline"
-             data-theme="dark"
-             data-chrome="noheader nofooter noborders transparent"
-             data-tweet-limit="8"
-             data-dnt="true"
-             href="https://twitter.com/FF_BattleOTS">
-            <div style="padding:20px;color:var(--muted);font-size:13px;text-align:center">
-              Loading tweets…
-            </div>
-          </a>
+      <div class="home-card-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 20px;text-align:center">
+        <div style="width:64px;height:64px;background:#000;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;font-family:serif">𝕏</div>
+        <div>
+          <div style="font-family:'Fredoka One',cursive;font-size:18px;color:var(--text);margin-bottom:4px">@FF_BattleOTS</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.5">Trash talk, scores, highlights<br>and tournament updates all season.</div>
         </div>
+        <a href="https://x.com/FF_BattleOTS" target="_blank" rel="noopener"
+           style="display:inline-block;background:#000;border:1.5px solid #333;color:#fff;font-family:'Fredoka One',cursive;font-size:15px;letter-spacing:.5px;padding:10px 28px;border-radius:24px;text-decoration:none;transition:background .2s"
+           onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#000'">
+          Follow on 𝕏
+        </a>
+        <div style="font-size:11px;color:var(--muted);margin-top:-6px">Opens in a new tab</div>
       </div>
     </div>
 
@@ -2833,21 +2827,6 @@ function bumpCounter() {
 }
 
 main();
-
-// Force Twitter/X widget to initialize after page load
-// (needed because the embed is inside a conditionally-rendered layout)
-window.addEventListener('load', function() {
-  if (window.twttr && window.twttr.widgets) {
-    window.twttr.widgets.load(document.getElementById('twitter-feed-wrap'));
-  } else {
-    // widgets.js not loaded yet — wait for it
-    window.twttr = window.twttr || {};
-    window.twttr._e = window.twttr._e || [];
-    window.twttr._e.push(function() {
-      window.twttr.widgets.load(document.getElementById('twitter-feed-wrap'));
-    });
-  }
-});
 </script>
 </body>
 </html>
