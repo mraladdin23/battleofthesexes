@@ -42,21 +42,17 @@ jobs:
       - name: Fetch Sleeper data
         run: node scripts/fetch-data.js
 
-      - name: Check if data.json changed
-        id: check_changes
-        run: |
-          if git diff --quiet data.json 2>/dev/null || [ ! -f data.json ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit and push updated data.json
+      - name: Commit and push data.json
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git diff --staged --quiet || git commit -m "🏈 Auto-refresh Sleeper data — $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to data.json — skipping commit"
+          else
+            git commit -m "🏈 Auto-refresh Sleeper data — $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+            echo "✅ data.json committed and pushed"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
